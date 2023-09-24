@@ -1,5 +1,7 @@
+import { addDoc, collection } from "firebase/firestore";
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { db } from './rinban-firestore';
 
 /**
  * 登録画面
@@ -32,8 +34,18 @@ export class RinbanRegist extends LitElement {
     `;
   }
 
-  private _regist() {
+  private async _regist() {
     console.log('regist');
+    try {
+      const docRef = await addDoc(collection(db, "rinban"), {
+        first: "Ada",
+        last: "Lovelace",
+        born: 1815
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   }
 }
 
