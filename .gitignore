@@ -1,0 +1,11 @@
+/node_modules/
+/lib/
+/test/
+custom-elements.json
+# top level source
+rinban-*.js
+rinban-*.js.map
+rinban-*.d.ts
+rinban-*.d.ts.map
+# only generated for size check
+*.bundled.js
