@@ -59,7 +59,7 @@ export class RinbanRegist extends LitElement {
       'repeatPeriod'
     ) as HTMLInputElement;
     try {
-      const docRef = await addDoc(collection(db, 'rinban'), {
+      const docRef = await addDoc(collection(db, 'rinbans'), {
         name: name.value,
         members: members,
         repeatNumber: repeatNumber.value,

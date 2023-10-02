@@ -29,6 +29,6 @@
     ],
     "types": ["mocha"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "@types/rinban-types.d.ts", "@types/**/*.d.ts"],
   "exclude": []
 }
