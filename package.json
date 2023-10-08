@@ -41,6 +41,7 @@
   "author": "Google LLC",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@material/web": "^1.0.0",
     "firebase": "^10.4.0",
     "lit": "^2.2.4"
   },

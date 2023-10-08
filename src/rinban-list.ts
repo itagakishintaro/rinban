@@ -11,10 +11,10 @@ import { db } from './rinban-firestore';
 export class RinbanList extends LitElement {
   static override styles = css`
     :host {
-      display: block;
+      /* display: block;
       border: solid 1px gray;
       padding: 16px;
-      max-width: 800px;
+      max-width: 800px; */
     }
   `;
 
@@ -23,6 +23,7 @@ export class RinbanList extends LitElement {
   
   override render() {
     return html`
+    <div>
       <h1>輪番一覧</h1>
       ${this.rinbans.map((rinban) => 
         html`
@@ -34,6 +35,7 @@ export class RinbanList extends LitElement {
           </div>
         `
       )}
+    </div>
     `;
   }
 
