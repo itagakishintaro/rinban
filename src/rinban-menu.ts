@@ -6,6 +6,7 @@ import '@material/web/menu/menu.js';
 import { MdMenu } from '@material/web/menu/menu.js';
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { commonStyles } from './rinban-common-styles';
 
 /**
  * メニュー コンポーネント
@@ -13,19 +14,19 @@ import { customElement } from 'lit/decorators.js';
  */
 @customElement('rinban-menu')
 export class RinbanMenu extends LitElement {
-  static override styles = css`
-    .menu {
-      border-bottom: solid 1px gray;
-    }
-    .title {
-      font-size: 1.2rem;
-      vertical-align: text-bottom;
-    }
-    a {
-      color: black;
-      text-decoration: none;
-    }
-  `;
+  static override styles = [
+    commonStyles,
+    css`
+      .menu {
+        border-bottom: solid 1px gray;
+        background-color: white;
+      }
+      .title {
+        font-size: 1.2rem;
+        vertical-align: text-bottom;
+      }
+    `,
+  ];
 
   constructor() {
     super();

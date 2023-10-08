@@ -1,7 +1,13 @@
-import { addDoc, collection } from 'firebase/firestore';
-import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { db } from './rinban-firestore';
+import {addDoc, collection} from 'firebase/firestore';
+import {LitElement, css, html} from 'lit';
+import {customElement} from 'lit/decorators.js';
+import {db} from './rinban-firestore';
+import {commonStyles} from './rinban-common-styles';
+import '@material/web/textfield/outlined-text-field.js';
+import '@material/web/divider/divider.js';
+import '@material/web/select/outlined-select.js';
+import '@material/web/select/select-option.js';
+import '@material/web/button/filled-button.js';
 
 /**
  * 登録画面
@@ -10,39 +16,62 @@ import { db } from './rinban-firestore';
  */
 @customElement('rinban-regist')
 export class RinbanRegist extends LitElement {
-  static override styles = css`
-    :host {
-      display: block;
-      border: solid 1px gray;
-      padding: 16px;
-      max-width: 800px;
-    }
-  `;
+  static override styles = [
+    commonStyles,
+    css`
+      .width-100 {
+        width: 100%;
+        margin: 1em 0;
+      }
+      .width-50 {
+        width: calc(50% - 4px);
+        margin: 1em 0;
+      }
+    `,
+  ];
 
   override render() {
     return html`
       <h1>輪番登録</h1>
-      <div>
-        <label for="name">輪番名</label>
-        <input id="name" type="text" />
-      </div>
-      <div>
-        <label for="members">メンバー</label>
-        <textarea id="members" rows="5" placeholder="メールアドレスをカンマ区切りで入力してください"></textarea>
-      </div>
-      <div>
-        <label for="repeatNumber">繰り返す間隔</label>
-        <input id="repeatNumber" type="number" value="1"/>
-        <select id="repeatPeriod">
-          <option value="day">日ごと</option>
-          <option value="week" selected>週間ごと</option>
-          <option value="month">か月ごと</option>
-          <option value="year">年ごと</option>
-        </select>
-      </div>
-      <button @click=${this._regist} part="button">
-        登録
-      </button>
+      <md-outlined-text-field
+        id="name"
+        class="width-100"
+        label="輪番名"
+        required
+      ></md-outlined-text-field>
+      <md-outlined-text-field
+        id="members"
+        class="width-100"
+        label="メンバー"
+        supporting-text="メールアドレスを入力してください"
+        type="email"
+        @blur="${this._validateMembers}"
+        required
+      ></md-outlined-text-field>
+      <md-outlined-text-field
+        id="repeatNumber"
+        class="width-50"
+        label="繰り返す間隔"
+        value="1"
+        type="number"
+        required
+      ></md-outlined-text-field>
+      <md-outlined-select id="repeatPeriod" class="width-50" required>
+        <md-select-option value="day"
+          ><div slot="headline">日ごと</div></md-select-option
+        >
+        <md-select-option value="week" selected
+          ><div slot="headline">週間ごと</div></md-select-option
+        >
+        <md-select-option value="month"
+          ><div slot="headline">か月ごと</div></md-select-option
+        >
+        <md-select-option value="year"
+          ><div slot="headline">年ごと</div></md-select-option
+        >
+      </md-outlined-select>
+
+      <md-filled-button @click=${this._regist}> 登録 </md-filled-button>
     `;
   }
 
@@ -69,6 +98,14 @@ export class RinbanRegist extends LitElement {
     } catch (e) {
       console.error('Error adding document: ', e);
     }
+  }
+
+  private _validateMembers() {
+    const membersString = this.shadowRoot?.getElementById(
+      'members'
+    ) as HTMLInputElement;
+    const report = membersString.reportValidity();
+    console.log(membersString.value, report)
   }
 }
 
