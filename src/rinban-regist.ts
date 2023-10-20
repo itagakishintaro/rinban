@@ -1,13 +1,13 @@
-import {addDoc, collection} from 'firebase/firestore';
-import {LitElement, css, html} from 'lit';
-import {customElement} from 'lit/decorators.js';
-import {db} from './rinban-firestore';
-import {commonStyles} from './rinban-common-styles';
-import '@material/web/textfield/outlined-text-field.js';
+import '@material/web/button/filled-button.js';
 import '@material/web/divider/divider.js';
 import '@material/web/select/outlined-select.js';
 import '@material/web/select/select-option.js';
-import '@material/web/button/filled-button.js';
+import '@material/web/textfield/outlined-text-field.js';
+import { addDoc, collection } from 'firebase/firestore';
+import { LitElement, css, html } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { commonStyles } from './rinban-common-styles';
+import { db } from './rinban-firestore';
 
 /**
  * 登録画面
@@ -37,6 +37,7 @@ export class RinbanRegist extends LitElement {
         id="name"
         class="width-100"
         label="輪番名"
+        @blur="${this._toggleButton}"
         required
       ></md-outlined-text-field>
       <md-outlined-text-field
@@ -45,7 +46,8 @@ export class RinbanRegist extends LitElement {
         label="メンバー"
         supporting-text="メールアドレスを入力してください"
         type="email"
-        @blur="${this._validateMembers}"
+        multiple="true"
+        @blur="${this._toggleButton}"
         required
       ></md-outlined-text-field>
       <md-outlined-text-field
@@ -53,10 +55,12 @@ export class RinbanRegist extends LitElement {
         class="width-50"
         label="繰り返す間隔"
         value="1"
+        min="1"
         type="number"
+        @blur="${this._toggleButton}"
         required
       ></md-outlined-text-field>
-      <md-outlined-select id="repeatPeriod" class="width-50" required>
+      <md-outlined-select id="repeatPeriod" class="width-50" @blur="${this._toggleButton}" required>
         <md-select-option value="day"
           ><div slot="headline">日ごと</div></md-select-option
         >
@@ -71,7 +75,7 @@ export class RinbanRegist extends LitElement {
         >
       </md-outlined-select>
 
-      <md-filled-button @click=${this._regist}> 登録 </md-filled-button>
+      <md-filled-button id="submitButton" @click=${this._regist} disabled> 登録 </md-filled-button>
     `;
   }
 
@@ -100,13 +104,48 @@ export class RinbanRegist extends LitElement {
     }
   }
 
+  private _toggleButton() {
+    const submitButton = this.shadowRoot?.getElementById(
+      'submitButton'
+    ) as HTMLButtonElement;
+    submitButton.disabled = !this._validate();
+  }
+
+  private _validate() {
+    return (
+      this._validateTitle() &&
+      this._validateMembers() &&
+      this._validateRepeatNumber() &&
+      this._validateRepeatPeriod()
+    );
+  }
+
+  private _validateTitle() {
+    const name = this.shadowRoot?.getElementById('name') as HTMLInputElement;
+    console.log(name.reportValidity());
+    return name.reportValidity();
+  }
+
   private _validateMembers() {
     const membersString = this.shadowRoot?.getElementById(
       'members'
     ) as HTMLInputElement;
-    const report = membersString.reportValidity();
-    console.log(membersString.value, report)
+    return membersString.reportValidity();
   }
+
+  private _validateRepeatNumber() {
+    const repeatNumber = this.shadowRoot?.getElementById(
+      'repeatNumber'
+    ) as HTMLInputElement;
+    return repeatNumber.reportValidity();
+  }
+
+  private _validateRepeatPeriod() {
+    const repeatPeriod = this.shadowRoot?.getElementById(
+      'repeatPeriod'
+    ) as HTMLInputElement;
+    return repeatPeriod.reportValidity();
+  } 
 }
 
 declare global {

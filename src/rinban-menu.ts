@@ -39,8 +39,8 @@ export class RinbanMenu extends LitElement {
           <md-icon>menu</md-icon>
         </md-icon-button>
         <md-menu id="rinban-menu" anchor="rinban-anchor">
-          <md-menu-item><a href="/regist.html">輪番登録</a></md-menu-item>
-          <md-menu-item><a href="/">輪番一覧</a></md-menu-item>
+          <a href="/regist.html"><md-menu-item>輪番登録</md-menu-item></a>
+          <a href="/"><md-menu-item>輪番一覧</md-menu-item></a>
         </md-menu>
         <a class="title" href="/">輪番</a>
       </div>
