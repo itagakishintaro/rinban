@@ -99,6 +99,7 @@ export class RinbanRegist extends LitElement {
         repeatPeriod: repeatPeriod.value,
       });
       console.log('Document written with ID: ', docRef.id);
+      window.location.href = '/';
     } catch (e) {
       console.error('Error adding document: ', e);
     }

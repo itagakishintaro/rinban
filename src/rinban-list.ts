@@ -1,11 +1,11 @@
-import {collection, getDocs} from 'firebase/firestore';
-import {LitElement, css, html} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
-import {commonStyles} from './rinban-common-styles';
-import {db} from './rinban-firestore';
-import '@material/web/list/list.js';
-import '@material/web/list/list-item.js';
 import '@material/web/divider/divider.js';
+import '@material/web/list/list-item.js';
+import '@material/web/list/list.js';
+import { collection, getDocs } from 'firebase/firestore';
+import { LitElement, css, html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { commonStyles } from './rinban-common-styles';
+import { db } from './rinban-firestore';
 
 /**
  * 一覧画面
@@ -23,6 +23,9 @@ export class RinbanList extends LitElement {
     .member {
       margin-right: .5em;
     }
+    .supporting-text {
+      width: 85vw;
+    }
   `];
 
   @property({type: Array})
@@ -37,17 +40,19 @@ export class RinbanList extends LitElement {
           ${this.rinbans.map(
             (rinban) =>
               html`
-              <md-list-item>
-                <div slot="headline">${rinban.name}</div slot="headline">
-                <div slot="supporting-text">
-                  ${rinban.members.map((member) => html`<span class="member">${member}</span>`)}
-                </div>
-                <div slot="trailing-supporting-text">
-                  <span>${rinban.repeatNumber}</span>
-                  <span>${rinban.repeatPeriod}</span>
-                </div>
-              </md-list-item>
-              <md-divider></md-divider>
+              <a href="/edit.html?id=${rinban.id}">
+                <md-list-item>
+                  <div slot="headline">${rinban.name}</div slot="headline">
+                  <div slot="supporting-text" class="supporting-text">
+                    ${rinban.members.map((member) => html`<span class="member">${member}</span>`)}
+                  </div>
+                  <div slot="trailing-supporting-text">
+                    <span>${rinban.repeatNumber}</span>
+                    <span>${rinban.repeatPeriod}</span>
+                  </div>
+                </md-list-item>
+                <md-divider></md-divider>
+              </a>
             `
           )}
         </md-list>
@@ -65,8 +70,10 @@ export class RinbanList extends LitElement {
     const newRinbans: Rinban[] = [];
     const querySnapshot = await getDocs(collection(db, 'rinbans'));
     querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${doc.data()}`);
-      newRinbans.push(doc.data() as Rinban);
+      const rinban = doc.data() as Rinban;
+      rinban.id = doc.id;
+      console.log(rinban);
+      newRinbans.push(rinban as Rinban);
     });
     this.rinbans = newRinbans;
   }
