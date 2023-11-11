@@ -3,10 +3,10 @@ import '@material/web/icon/icon.js';
 import '@material/web/iconbutton/icon-button.js';
 import '@material/web/menu/menu-item.js';
 import '@material/web/menu/menu.js';
-import { MdMenu } from '@material/web/menu/menu.js';
-import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { commonStyles } from './rinban-common-styles';
+import {MdMenu} from '@material/web/menu/menu.js';
+import {LitElement, css, html} from 'lit';
+import {customElement} from 'lit/decorators.js';
+import {commonStyles} from './rinban-common-styles';
 
 /**
  * メニュー コンポーネント

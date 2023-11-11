@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import { RinbanRegist } from '../rinban-regist.js';
+import {RinbanRegist} from '../rinban-regist.js';
 
-import { assert, fixture } from '@open-wc/testing';
-import { html } from 'lit/static-html.js';
+import {assert, fixture} from '@open-wc/testing';
+import {html} from 'lit/static-html.js';
 
 suite('rinban-regist', () => {
   test('is defined', () => {

@@ -1,11 +1,11 @@
 import '@material/web/divider/divider.js';
 import '@material/web/list/list-item.js';
 import '@material/web/list/list.js';
-import { collection, getDocs } from 'firebase/firestore';
-import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import { commonStyles } from './rinban-common-styles';
-import { db } from './rinban-firestore';
+import {collection, getDocs} from 'firebase/firestore';
+import {LitElement, css, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {commonStyles} from './rinban-common-styles';
+import {db} from './rinban-firestore';
 
 /**
  * 一覧画面
@@ -13,20 +13,23 @@ import { db } from './rinban-firestore';
  */
 @customElement('rinban-list')
 export class RinbanList extends LitElement {
-  static override styles = [commonStyles, css`
-  :host {
-    --md-list-container-color: white;
-  }
-  [slot="headline"] {
-    font-weight: bold;
-  }
-    .member {
-      margin-right: .5em;
-    }
-    .supporting-text {
-      width: 85vw;
-    }
-  `];
+  static override styles = [
+    commonStyles,
+    css`
+      :host {
+        --md-list-container-color: white;
+      }
+      [slot='headline'] {
+        font-weight: bold;
+      }
+      .member {
+        margin-right: 0.5em;
+      }
+      .supporting-text {
+        width: 85vw;
+      }
+    `,
+  ];
 
   @property({type: Array})
   rinbans: Rinban[];
@@ -40,11 +43,13 @@ export class RinbanList extends LitElement {
           ${this.rinbans.map(
             (rinban) =>
               html`
-              <a href="/edit.html?id=${rinban.id}">
+              <a href="/regist.html?id=${rinban.id}">
                 <md-list-item>
                   <div slot="headline">${rinban.name}</div slot="headline">
                   <div slot="supporting-text" class="supporting-text">
-                    ${rinban.members.map((member) => html`<span class="member">${member}</span>`)}
+                    ${rinban.members.map(
+                      (member) => html`<span class="member">${member}</span>`
+                    )}
                   </div>
                   <div slot="trailing-supporting-text">
                     <span>${rinban.repeatNumber}</span>
@@ -81,6 +86,6 @@ export class RinbanList extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    list: RinbanList;
+    'rinban-list': RinbanList;
   }
 }
