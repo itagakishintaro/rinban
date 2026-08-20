@@ -23,12 +23,12 @@ export default function RotationSection({ groupId, group }: { groupId: string; g
   }
 
   return (
-    <section className="mt-8">
-      <h2 className="text-xl font-bold">ローテーション</h2>
+    <section className="mt-6 rounded-2xl bg-white p-5 shadow-(--shadow-yuru-sm)">
+      <h2 className="font-maru text-sm font-bold text-wakaba">ローテーション</h2>
 
-      <div className="mt-4 flex flex-wrap items-end gap-3">
+      <div className="mt-3 flex flex-wrap items-end gap-3">
         <div>
-          <label htmlFor="rotation-anchor" className="block text-sm font-medium">
+          <label htmlFor="rotation-anchor" className="block text-sm text-soft">
             開始日
           </label>
           <input
@@ -36,19 +36,19 @@ export default function RotationSection({ groupId, group }: { groupId: string; g
             type="date"
             value={anchorDate}
             onChange={(e) => onAnchorChange(e.target.value)}
-            className="mt-1 rounded border border-gray-300 px-3 py-2"
+            className="mt-1 rounded-xl border-2 border-cream-line px-3 py-2"
           />
         </div>
 
         <div>
-          <label htmlFor="rotation-type" className="block text-sm font-medium">
+          <label htmlFor="rotation-type" className="block text-sm text-soft">
             繰り返し
           </label>
           <select
             id="rotation-type"
             value={r?.type ?? ''}
             onChange={(e) => onTypeChange(e.target.value as RotationType)}
-            className="mt-1 rounded border border-gray-300 px-3 py-2"
+            className="mt-1 rounded-xl border-2 border-cream-line bg-white px-3 py-2"
           >
             <option value="" disabled>
               選択してください

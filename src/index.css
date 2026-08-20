@@ -1,1 +1,23 @@
 @import 'tailwindcss';
+
+/* デザイントークン: 案C「ゆるばん」(docs/design.md参照) */
+@theme {
+  --color-kinari: #faf8f2; /* 地 */
+  --color-ink: #3d3a34; /* 本文 */
+  --color-soft: #8a857b; /* 補助テキスト */
+  --color-wakaba: #2f9461; /* アクセント */
+  --color-wakaba-soft: #e3f2e8; /* アクセント淡 */
+  --color-cream-line: #ece7db; /* 区切り線 */
+  --color-amber-soft: #fdf0d5; /* 注意バッジ地 */
+  --color-amber-ink: #9a6700; /* 注意バッジ文字 */
+  --font-maru: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+  --font-sans: 'Noto Sans JP', sans-serif;
+  --shadow-yuru: 0 4px 16px rgba(112, 98, 62, 0.1);
+  --shadow-yuru-sm: 0 2px 10px rgba(112, 98, 62, 0.07);
+}
+
+@layer base {
+  body {
+    @apply bg-kinari text-ink;
+  }
+}

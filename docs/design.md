@@ -109,6 +109,15 @@ Groupは1画面に集約し、編集はインライン/モーダルで行う。�
 - `create`, `update`: 誰でも可。ただしスキーマ検証(フィールド型、members上限50、name長さ上限など)をルールで行う
 - `delete`: 拒否(誤削除・荒らし防止。グループ削除機能は要件外)
 
+## デザイン(案C「ゆるばん」)
+
+3案比較からユーザーが選定。トークンは `src/index.css` の `@theme` に定義し、新しいUIは必ずこれを使う。
+
+- 色: 地 `kinari #faf8f2` / 本文 `ink #3d3a34` / 補助 `soft #8a857b` / アクセント `wakaba #2f9461` / アクセント淡 `wakaba-soft #e3f2e8` / 区切り `cream-line #ece7db`(破線) / 注意 `amber-soft #fdf0d5`+`amber-ink #9a6700`
+- 書体: 見出し=Zen Maru Gothic(`font-maru`)、本文=Noto Sans JP
+- 形状: 白カード角丸16〜24px+やわらかい影(`shadow-yuru`)、ボタンはピル型(主要=wakaba地に白字、副次=wakaba-soft地に緑字、控えめ=cream-line枠)
+- 主役: 予定一覧の先頭は「つぎの担当」ヒーローカード(丸アバター+名前+日付)
+
 ## テスト戦略
 
 | 対象 | 手法 |
