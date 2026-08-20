@@ -4,6 +4,7 @@
 
 - GitHub: 個人アカウント `itagakishintaro` / リポジトリ `itagakishintaro/rinban`(public)
 - push はSSHホストエイリアス `github.com-personal` 経由: `git@github.com-personal:itagakishintaro/rinban.git`
+- `gh` コマンド(Issue・PR作成等)の前に `gh auth switch -u itagakishintaro` で個人アカウントに切り替える(通常は会社アカウントがactive)
 - git user.email: `itagaki.shintaro@gmail.com`
 - Firebase: `itagaki.shintaro@gmail.com` のアカウントで作成した専用プロジェクト(Blazeプラン)
 
