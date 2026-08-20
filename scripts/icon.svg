@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Rinbanアイコン: 若葉の地に、輪番(順番が回る)を表す2本の円弧矢印 -->
+  <rect width="512" height="512" rx="112" fill="#2f9461"/>
+  <g stroke="#ffffff" stroke-width="44" fill="none" stroke-linecap="round">
+    <path d="M 366 145 A 150 150 0 0 0 118 220"/>
+    <path d="M 146 367 A 150 150 0 0 0 394 292"/>
+  </g>
+  <g fill="#ffffff">
+    <path d="M 350 96 L 406 178 L 308 172 Z"/>
+    <path d="M 162 416 L 106 334 L 204 340 Z"/>
+  </g>
+</svg>
