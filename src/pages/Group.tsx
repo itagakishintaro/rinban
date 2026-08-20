@@ -1,6 +1,8 @@
 import { useParams } from 'react-router-dom'
 import { useGroup } from '../hooks/useGroup'
 import MemberSection from '../components/MemberSection'
+import RotationSection from '../components/RotationSection'
+import ScheduleSection from '../components/ScheduleSection'
 
 export default function Group() {
   const { groupId } = useParams()
@@ -20,6 +22,8 @@ export default function Group() {
   return (
     <main className="mx-auto max-w-xl p-8">
       <h1 className="text-3xl font-bold">{state.group.name}</h1>
+      <ScheduleSection group={state.group} />
+      <RotationSection groupId={groupId!} group={state.group} />
       <MemberSection groupId={groupId!} group={state.group} />
     </main>
   )
