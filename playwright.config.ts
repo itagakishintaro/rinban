@@ -11,6 +11,7 @@ export default defineConfig({
   testDir,
   use: {
     baseURL: 'http://localhost:5173',
+    permissions: ['clipboard-read', 'clipboard-write'],
   },
   webServer: {
     command: 'npm run dev',
