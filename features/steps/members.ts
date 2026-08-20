@@ -17,7 +17,7 @@ When(
   async ({ page }, from: string, to: string) => {
     await page.getByRole('button', { name: `${from}を変更` }).click()
     await page.getByLabel('新しいメンバー名').fill(to)
-    await page.getByRole('button', { name: '保存' }).click()
+    await page.getByRole('button', { name: '保存', exact: true }).click()
   },
 )
 
