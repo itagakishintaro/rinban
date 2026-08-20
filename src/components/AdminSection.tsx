@@ -18,26 +18,26 @@ export default function AdminSection({ groupId, group }: { groupId: string; grou
   }
 
   return (
-    <section className="mt-10 rounded border border-gray-200 p-4">
-      <h2 className="text-xl font-bold">管理</h2>
-      <div className="mt-4 flex flex-wrap items-end gap-6">
+    <section className="mt-6 rounded-2xl border-2 border-dashed border-cream-line p-5">
+      <h2 className="font-maru text-sm font-bold text-soft">管理</h2>
+      <div className="mt-3 flex flex-wrap items-end gap-6">
         <div>
-          <label htmlFor="end-date" className="block text-sm font-medium">
+          <label htmlFor="end-date" className="block text-sm text-soft">
             終了日
           </label>
-          <p className="text-sm text-gray-600">この日を過ぎると予定が表示されなくなります。</p>
+          <p className="text-sm text-soft">この日を過ぎると予定が表示されなくなります。</p>
           <input
             id="end-date"
             type="date"
             value={group.endDate ?? ''}
             onChange={(e) => onEndDateChange(e.target.value)}
-            className="mt-1 rounded border border-gray-300 px-3 py-2"
+            className="mt-1 rounded-xl border-2 border-cream-line bg-white px-3 py-2"
           />
         </div>
         {isOwned(groupId) && (
           <button
             onClick={() => updateGroup(groupId, { archived: true })}
-            className="rounded border border-red-300 px-4 py-2 text-sm text-red-600"
+            className="rounded-full border border-red-200 px-4 py-2 text-sm text-red-500"
           >
             アーカイブする
           </button>

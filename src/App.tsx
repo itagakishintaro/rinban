@@ -6,9 +6,9 @@ import NotFound from './pages/NotFound'
 export default function App() {
   return (
     <>
-      <header className="border-b border-gray-200">
-        <div className="mx-auto max-w-xl px-8 py-3">
-          <Link to="/" className="text-lg font-bold text-blue-700">
+      <header>
+        <div className="mx-auto max-w-xl px-6 py-4">
+          <Link to="/" className="font-maru text-xl font-bold text-wakaba">
             Rinban
           </Link>
         </div>

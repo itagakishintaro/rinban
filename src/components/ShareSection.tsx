@@ -14,9 +14,9 @@ export default function ShareSection() {
   }
 
   return (
-    <section className="mt-6 rounded border border-gray-200 bg-gray-50 p-4">
-      <h2 className="text-sm font-bold">この輪番のURL</h2>
-      <p className="mt-1 text-sm text-gray-600">
+    <section className="mt-6 rounded-2xl bg-white p-5 shadow-(--shadow-yuru-sm)">
+      <h2 className="font-maru text-sm font-bold text-wakaba">この輪番のURL</h2>
+      <p className="mt-1 text-sm text-soft">
         URLをコピーしてSlackなどでメンバーに共有してください。
       </p>
       <div className="mt-2 flex gap-2">
@@ -25,16 +25,16 @@ export default function ShareSection() {
           readOnly
           value={url}
           onFocus={(e) => e.target.select()}
-          className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm"
+          className="w-full rounded-xl border-2 border-cream-line px-3 py-2 text-sm text-soft"
         />
         <button
           onClick={onCopy}
-          className="shrink-0 rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white"
+          className="shrink-0 rounded-full bg-wakaba-soft px-4 py-2 text-sm font-bold text-wakaba"
         >
           コピーする
         </button>
       </div>
-      {copied && <p className="mt-1 text-sm text-green-700">コピーしました</p>}
+      {copied && <p className="mt-1 text-sm text-wakaba">コピーしました</p>}
     </section>
   )
 }
