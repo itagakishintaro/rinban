@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { addMember, renameMember, removeMember, membersInOrder } from './members'
+import { addMember, renameMember, removeMember, membersInOrder, moveInOrder } from './members'
 
 const alice = { id: 'a', name: 'アリス' }
 const bob = { id: 'b', name: 'ボブ' }
@@ -38,4 +38,24 @@ test('membersInOrder: order順に並ぶ', () => {
 
 test('membersInOrder: orderにない無効IDは無視される', () => {
   expect(membersInOrder({ members: [alice], order: ['x', 'a'] })).toEqual([alice])
+})
+
+test('moveInOrder: 上に移動すると前の要素と入れ替わる', () => {
+  expect(moveInOrder(['a', 'b', 'c'], 'b', -1)).toEqual(['b', 'a', 'c'])
+})
+
+test('moveInOrder: 下に移動すると次の要素と入れ替わる', () => {
+  expect(moveInOrder(['a', 'b', 'c'], 'b', 1)).toEqual(['a', 'c', 'b'])
+})
+
+test('moveInOrder: 先頭を上に移動しても変化しない', () => {
+  expect(moveInOrder(['a', 'b'], 'a', -1)).toEqual(['a', 'b'])
+})
+
+test('moveInOrder: 末尾を下に移動しても変化しない', () => {
+  expect(moveInOrder(['a', 'b'], 'b', 1)).toEqual(['a', 'b'])
+})
+
+test('moveInOrder: 存在しないIDなら変化しない', () => {
+  expect(moveInOrder(['a', 'b'], 'x', 1)).toEqual(['a', 'b'])
 })

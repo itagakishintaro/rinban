@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Group } from '../types'
-import { addMember, renameMember, removeMember, membersInOrder } from '../domain/members'
+import { addMember, renameMember, removeMember, membersInOrder, moveInOrder } from '../domain/members'
 import { updateGroup } from '../lib/groups'
 import { validateName, NAME_MAX } from '../lib/validation'
 
@@ -35,12 +35,16 @@ export default function MemberSection({ groupId, group }: { groupId: string; gro
     await updateGroup(groupId, removeMember(group, id))
   }
 
+  async function onMove(id: string, delta: -1 | 1) {
+    await updateGroup(groupId, { order: moveInOrder(group.order, id, delta) })
+  }
+
   return (
     <section className="mt-8">
       <h2 className="text-xl font-bold">メンバー</h2>
 
       <ul aria-label="メンバー一覧" className="mt-4 divide-y divide-gray-200">
-        {members.map((m) =>
+        {members.map((m, i) =>
           editingId === m.id ? (
             <li key={m.id} className="py-2">
               <form onSubmit={onRename} className="flex items-center gap-2">
@@ -71,6 +75,22 @@ export default function MemberSection({ groupId, group }: { groupId: string; gro
             <li key={m.id} className="flex items-center justify-between py-2">
               <span>{m.name}</span>
               <span className="flex gap-2">
+                <button
+                  aria-label={`${m.name}を上に移動`}
+                  onClick={() => onMove(m.id, -1)}
+                  disabled={i === 0}
+                  className="rounded border border-gray-300 px-2 py-1 text-sm disabled:opacity-30"
+                >
+                  ↑
+                </button>
+                <button
+                  aria-label={`${m.name}を下に移動`}
+                  onClick={() => onMove(m.id, 1)}
+                  disabled={i === members.length - 1}
+                  className="rounded border border-gray-300 px-2 py-1 text-sm disabled:opacity-30"
+                >
+                  ↓
+                </button>
                 <button
                   aria-label={`${m.name}を変更`}
                   onClick={() => {
