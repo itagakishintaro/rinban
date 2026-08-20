@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useGroup } from '../hooks/useGroup'
 import MemberSection from '../components/MemberSection'
-import ShareButton from '../components/ShareButton'
+import ShareSection from '../components/ShareSection'
 import RotationSection from '../components/RotationSection'
 import ScheduleSection from '../components/ScheduleSection'
 
@@ -22,10 +22,8 @@ export default function Group() {
   }
   return (
     <main className="mx-auto max-w-xl p-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">{state.group.name}</h1>
-        <ShareButton groupName={state.group.name} />
-      </div>
+      <h1 className="text-3xl font-bold">{state.group.name}</h1>
+      <ShareSection />
       <ScheduleSection groupId={groupId!} group={state.group} />
       <RotationSection groupId={groupId!} group={state.group} />
       <MemberSection groupId={groupId!} group={state.group} />

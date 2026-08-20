@@ -3,8 +3,12 @@ import { createBdd } from 'playwright-bdd'
 
 const { When, Then } = createBdd()
 
-When('共有ボタンを押す', async ({ page }) => {
-  await page.getByRole('button', { name: '共有' }).click()
+Then('この輪番のURLが表示されている', async ({ page }) => {
+  await expect(page.getByLabel('この輪番のURL')).toHaveValue(page.url())
+})
+
+When('コピーするボタンを押す', async ({ page }) => {
+  await page.getByRole('button', { name: 'コピーする' }).click()
 })
 
 Then('クリップボードに現在のURLが入っている', async ({ page }) => {
