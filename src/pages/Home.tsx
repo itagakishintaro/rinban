@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { createGroup } from '../lib/groups'
 import { validateName, NAME_MAX } from '../lib/validation'
 import { loadRecentGroups } from '../lib/recentGroups'
+import { markOwned } from '../lib/ownedGroups'
 
 export default function Home() {
   const [name, setName] = useState('')
@@ -19,6 +20,7 @@ export default function Home() {
     setCreating(true)
     try {
       const id = await createGroup(groupName)
+      markOwned(id)
       navigate(`/g/${id}`)
     } finally {
       setCreating(false)

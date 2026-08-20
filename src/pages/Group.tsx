@@ -6,6 +6,7 @@ import MemberSection from '../components/MemberSection'
 import ShareSection from '../components/ShareSection'
 import AdminSection from '../components/AdminSection'
 import { updateGroup } from '../lib/groups'
+import { isOwned } from '../lib/ownedGroups'
 import RotationSection from '../components/RotationSection'
 import ScheduleSection from '../components/ScheduleSection'
 
@@ -35,12 +36,14 @@ export default function Group() {
         <h1 className="text-3xl font-bold">{state.group.name}</h1>
         <div className="mt-6 rounded border border-amber-300 bg-amber-50 p-4">
           <p>この輪番はアーカイブされています。</p>
-          <button
-            onClick={() => updateGroup(groupId!, { archived: false })}
-            className="mt-3 rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white"
-          >
-            復元する
-          </button>
+          {isOwned(groupId!) && (
+            <button
+              onClick={() => updateGroup(groupId!, { archived: false })}
+              className="mt-3 rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white"
+            >
+              復元する
+            </button>
+          )}
         </div>
       </main>
     )

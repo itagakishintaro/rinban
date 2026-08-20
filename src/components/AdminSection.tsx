@@ -2,6 +2,7 @@ import { deleteField, doc, serverTimestamp, updateDoc } from 'firebase/firestore
 import type { Group } from '../types'
 import { db } from '../firebase'
 import { updateGroup } from '../lib/groups'
+import { isOwned } from '../lib/ownedGroups'
 
 export default function AdminSection({ groupId, group }: { groupId: string; group: Group }) {
   async function onEndDateChange(value: string) {
@@ -33,12 +34,14 @@ export default function AdminSection({ groupId, group }: { groupId: string; grou
             className="mt-1 rounded border border-gray-300 px-3 py-2"
           />
         </div>
-        <button
-          onClick={() => updateGroup(groupId, { archived: true })}
-          className="rounded border border-red-300 px-4 py-2 text-sm text-red-600"
-        >
-          アーカイブする
-        </button>
+        {isOwned(groupId) && (
+          <button
+            onClick={() => updateGroup(groupId, { archived: true })}
+            className="rounded border border-red-300 px-4 py-2 text-sm text-red-600"
+          >
+            アーカイブする
+          </button>
+        )}
       </div>
     </section>
   )

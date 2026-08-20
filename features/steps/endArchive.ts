@@ -1,6 +1,7 @@
+import { expect } from '@playwright/test'
 import { createBdd } from 'playwright-bdd'
 
-const { When } = createBdd()
+const { When, Then } = createBdd()
 
 // Asia/Tokyoの今日からoffset日ずらしたYYYY-MM-DD
 function dateFromToday(offsetDays: number): string {
@@ -23,4 +24,14 @@ When('輪番をアーカイブする', async ({ page }) => {
 
 When('輪番を復元する', async ({ page }) => {
   await page.getByRole('button', { name: '復元する' }).click()
+})
+
+// localStorage(所有フラグ・訪問履歴)を消して別ブラウザの状態を再現する
+When('別のブラウザとしてグループページを開き直す', async ({ page }) => {
+  await page.evaluate(() => localStorage.clear())
+  await page.reload()
+})
+
+Then('{string} ボタンは表示されない', async ({ page }, name: string) => {
+  await expect(page.getByRole('button', { name })).toHaveCount(0)
 })
