@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /groups/{groupId} {
+      // URLを知っている(=groupIdを知っている)人は誰でも読み書き可
+      allow get: if true;
+      // グループIDの列挙を防ぐ
+      allow list: if false;
+      // スキーマ検証はグループ作成機能の実装時に追加する
+      allow create, update: if true;
+      // 誤削除・荒らし防止
+      allow delete: if false;
+    }
+  }
+}

@@ -2,6 +2,7 @@ node_modules/
 dist/
 coverage/
 test-results/
+.features-gen/
 playwright-report/
 .env
 .env.*
