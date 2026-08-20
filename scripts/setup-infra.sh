@@ -14,6 +14,7 @@ ROLES=(
   roles/serviceusage.apiKeysViewer
   roles/run.viewer
   roles/firebaserules.admin
+  roles/serviceusage.serviceUsageViewer
 )
 
 echo "== 1/7 GitHubリポジトリ"
