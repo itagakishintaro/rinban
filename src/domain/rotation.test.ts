@@ -1,5 +1,12 @@
 import { test, expect } from 'vitest'
-import { occurrences, occurrenceIndex, assigneeFor, schedule, rotationLabel } from './rotation'
+import {
+  occurrences,
+  occurrenceIndex,
+  assigneeFor,
+  schedule,
+  rotationLabel,
+  isEnded,
+} from './rotation'
 import type { Group, Rotation } from '../types'
 
 // 2026-08-22は土曜日(8月の土曜: 1, 8, 15, 22, 29 → 22日は第4)
@@ -136,4 +143,18 @@ test('schedule: 開催日と担当者の一覧を返す', () => {
     { date: '2026-08-29', member: bob },
     { date: '2026-09-05', member: alice },
   ])
+})
+
+test('schedule: 終了日より後の開催は含まれない', () => {
+  const g = { ...group, endDate: '2026-08-29' }
+  expect(schedule(g, '2026-08-22', 10)).toEqual([
+    { date: '2026-08-22', member: alice },
+    { date: '2026-08-29', member: bob },
+  ])
+})
+
+test('isEnded: 終了日を過ぎていればtrue', () => {
+  expect(isEnded({ ...group, endDate: '2026-08-21' }, '2026-08-22')).toBe(true)
+  expect(isEnded({ ...group, endDate: '2026-08-22' }, '2026-08-22')).toBe(false)
+  expect(isEnded(group, '2026-08-22')).toBe(false)
 })

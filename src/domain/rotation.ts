@@ -170,15 +170,22 @@ export function assigneeFor(group: Group, date: string): Member | null {
   return members.find((m) => m.id === id) ?? null
 }
 
-// from以降n回分の開催日と担当者
+// from以降n回分の開催日と担当者(終了日より後は含まない)
 export function schedule(
   group: Group,
   from: string,
   n: number,
 ): { date: string; member: Member | null }[] {
   if (!group.rotation) return []
-  return occurrences(group.rotation, from, n).map((date) => ({
-    date,
-    member: assigneeFor(group, date),
-  }))
+  return occurrences(group.rotation, from, n)
+    .filter((date) => !group.endDate || date <= group.endDate)
+    .map((date) => ({
+      date,
+      member: assigneeFor(group, date),
+    }))
+}
+
+// 終了日を過ぎているか
+export function isEnded(group: Group, today: string): boolean {
+  return group.endDate !== undefined && today > group.endDate
 }
