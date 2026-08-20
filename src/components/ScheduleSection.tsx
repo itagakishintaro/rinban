@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Group, Member } from '../types'
-import { schedule, isEnded } from '../domain/rotation'
+import { schedule } from '../domain/rotation'
 import { swapAssignees, removeOverride } from '../domain/overrides'
 import { todayInTokyo, formatJa } from '../domain/dates'
 import { updateGroup } from '../lib/groups'
@@ -11,9 +11,6 @@ export default function ScheduleSection({ groupId, group }: { groupId: string; g
   // 入れ替え元として選択中の日付
   const [swapFrom, setSwapFrom] = useState<string | null>(null)
 
-  if (isEnded(group, todayInTokyo())) {
-    return <p className="mt-8 text-soft">この輪番は終了しました。</p>
-  }
   if (!group.rotation) {
     return <p className="mt-8 text-soft">ローテーションを設定すると予定が表示されます。</p>
   }
@@ -22,6 +19,11 @@ export default function ScheduleSection({ groupId, group }: { groupId: string; g
   }
 
   const items = schedule(group, todayInTokyo(), COUNT)
+
+  // 終了日・繰り返しの終了(回数/終了日)で今後の開催がない
+  if (items.length === 0) {
+    return <p className="mt-8 text-soft">この輪番は終了しました。</p>
+  }
 
   async function onSwap(date: string) {
     if (swapFrom === null) return

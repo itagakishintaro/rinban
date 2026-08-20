@@ -60,7 +60,6 @@ groups/{groupId}
 
 設定UIは「開始日を選ぶと、その日付から導出したラベルの選択肢が並ぶ」方式。
 例: 開始日が2026-08-22(土)なら「毎週 土曜日」「毎月 第4土曜日」「毎年 8月22日」。
-カスタム(任意間隔など)はMVP対象外。
 
 | type | 開催日の規則 |
 | --- | --- |
@@ -69,6 +68,7 @@ groups/{groupId}
 | weekdays | 毎週平日(月〜金)。anchorDateが土日なら翌月曜から |
 | monthlyNthWeekday | 毎月、anchorDateの「第N X曜日」。anchorDateが第5週なら「最終X曜日」として扱う |
 | yearly | 毎年、anchorDateと同じ月日。2/29は平年は2/28 |
+| custom | GCalのカスタムと同様。`{ interval, unit(day/week/month/year), weekdays?(週・複数可), monthlyMode?(N日/第N曜日), ends?(until/count) }`。週は月曜はじまり、weekdays未指定はanchorの曜日 |
 
 ### 開催日の計算
 
