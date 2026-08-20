@@ -42,6 +42,10 @@ groups/{groupId}
   overrides: {                  // 例外。表示時に通常計算より優先
     [date: string]: string      // 'YYYY-MM-DD' → member.id
   },
+  endDate?: string,             // 'YYYY-MM-DD'。これより後の開催はなく、過ぎると「終了しました」表示
+  archived?: boolean,           // 論理削除。trueの間はバナーと復元ボタンのみ表示。物理削除は設けない
+                                // アーカイブ・復元の操作UIは作成時のブラウザのみ表示(localStorageの
+                                // 所有フラグによるUI制御。ルールでの強制はしない。調整さんと同方式)
   createdAt: Timestamp,
   updatedAt: Timestamp
 }

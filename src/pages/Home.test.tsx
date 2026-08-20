@@ -3,11 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Home from './Home'
 
-test('アプリ名が表示される', () => {
+test('キャッチコピーが表示される', () => {
   render(
     <MemoryRouter>
       <Home />
     </MemoryRouter>,
   )
-  expect(screen.getByRole('heading', { name: 'Rinban' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: '輪番をかんたんに管理' })).toBeInTheDocument()
 })

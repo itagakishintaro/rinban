@@ -82,6 +82,16 @@ test('メンバー51人は拒否', async () => {
   await assertFails(setDoc(doc(db(), 'groups', 'g1'), { ...validGroup, members }))
 })
 
+test('endDateとarchivedは正しい型なら可', async () => {
+  await assertSucceeds(
+    setDoc(doc(db(), 'groups', 'g1'), { ...validGroup, endDate: '2026-12-31', archived: true }),
+  )
+})
+
+test('endDateが文字列でなければ拒否', async () => {
+  await assertFails(setDoc(doc(db(), 'groups', 'g1'), { ...validGroup, endDate: 20261231 }))
+})
+
 test('deleteは拒否', async () => {
   await seed('g1')
   await assertFails(deleteDoc(doc(db(), 'groups', 'g1')))

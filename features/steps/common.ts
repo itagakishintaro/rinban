@@ -8,5 +8,5 @@ When('トップページを開く', async ({ page }) => {
 })
 
 Then('アプリ名「Rinban」が表示される', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: 'Rinban' })).toBeVisible()
+  await expect(page.getByRole('banner').getByRole('link', { name: 'Rinban' })).toBeVisible()
 })

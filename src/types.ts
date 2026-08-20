@@ -16,4 +16,6 @@ export type Group = {
   order: string[]
   rotation?: Rotation
   overrides: Record<string, string>
+  endDate?: string // 'YYYY-MM-DD'。これより後の開催はない
+  archived?: boolean
 }
