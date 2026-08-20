@@ -6,8 +6,9 @@ export default function ShareButton({ groupName }: { groupName: string }) {
 
   async function onShare() {
     const url = location.href
-    // スマホ等ではOSの共有シートを開く。キャンセルされたら何もしない
-    if (navigator.share) {
+    // OSの共有シートはタッチデバイスのみ。デスクトップにもnavigator.shareが存在するため
+    // これで分岐しないと、PCでコピーされず共有シートだけが開いてしまう
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) {
       try {
         await navigator.share({ title: `Rinban - ${groupName}`, url })
         return
