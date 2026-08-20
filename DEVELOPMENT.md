@@ -45,8 +45,14 @@
 
 ```bash
 npm run build
-firebase deploy --only hosting
+firebase deploy --only hosting,firestore:rules
 ```
+
+## インフラ(IaC)
+
+- Firebase/GCP/GitHubの環境構築は `scripts/setup-infra.sh` に冪等な形でコード化されている(存在確認→なければ作成)。何度実行しても安全
+- インフラ設定の追加・変更は手作業で行わず、このスクリプトに追記して実行する
+- 例外: Firestoreのロケーション変更、SAキーの再発行(GitHub Secretを削除してから再実行)
 
 ## AI駆動開発のハーネス
 
