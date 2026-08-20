@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createGroup } from '../lib/groups'
-import { validateGroupName, GROUP_NAME_MAX } from '../lib/validation'
+import { validateName, NAME_MAX } from '../lib/validation'
 
 export default function Home() {
   const [name, setName] = useState('')
   const [creating, setCreating] = useState(false)
   const navigate = useNavigate()
 
-  const valid = validateGroupName(name) !== null
+  const valid = validateName(name) !== null
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const groupName = validateGroupName(name)
+    const groupName = validateName(name)
     if (!groupName || creating) return
     setCreating(true)
     try {
@@ -37,7 +37,7 @@ export default function Home() {
             id="group-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            maxLength={GROUP_NAME_MAX}
+            maxLength={NAME_MAX}
             placeholder="例: 朝会司会"
             className="mt-1 w-full rounded border border-gray-300 px-3 py-2"
           />

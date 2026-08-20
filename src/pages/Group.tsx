@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { useGroup } from '../hooks/useGroup'
+import MemberSection from '../components/MemberSection'
 
 export default function Group() {
   const { groupId } = useParams()
@@ -19,6 +20,7 @@ export default function Group() {
   return (
     <main className="mx-auto max-w-xl p-8">
       <h1 className="text-3xl font-bold">{state.group.name}</h1>
+      <MemberSection groupId={groupId!} group={state.group} />
     </main>
   )
 }
