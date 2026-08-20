@@ -29,8 +29,10 @@ export default function Home() {
 
   return (
     <main className="mx-auto max-w-xl p-8">
-      <h1 className="text-3xl font-bold">Rinban</h1>
-      <p className="mt-2 text-gray-600">輪番をかんたんに管理</p>
+      <h1 className="text-3xl font-bold">輪番をかんたんに管理</h1>
+      <p className="mt-2 text-gray-600">
+        朝会の司会や読書会の担当など、交代制の当番をURL共有だけで管理できます。
+      </p>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-4">
         <div>
