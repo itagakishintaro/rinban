@@ -16,7 +16,8 @@
     "test:watch": "vitest",
     "test:e2e": "bddgen && firebase emulators:exec --only firestore --project demo-rinban 'playwright test'",
     "test:rules": "firebase emulators:exec --only firestore --project demo-rinban 'vitest run --config vitest.rules.config.ts'",
-    "emulators": "firebase emulators:start"
+    "emulators": "firebase emulators:start",
+    "generate-icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "firebase": "^12.18.0",
@@ -41,10 +42,12 @@
     "jsdom": "^29.1.1",
     "playwright-bdd": "^9.2.0",
     "prettier": "^3.9.6",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
     "vite": "^8.2.1",
+    "vite-plugin-pwa": "^1.3.0",
     "vitest": "^4.1.11"
   }
 }
