@@ -27,13 +27,15 @@
 
 | 種類 | 場所 | 実行 |
 | --- | --- | --- |
-| 振る舞いテスト(BDD) | `features/` | `npm run test:e2e`(エミュレータ起動が前提) |
+| 振る舞いテスト(BDD) | `features/` | `npm run test:e2e`(エミュレータ上で実行される) |
 | ユニットテスト(TDD) | `src/**/*.test.ts(x)` | `npm run test` |
+| セキュリティルール | `rules/` | `npm run test:rules`(エミュレータ上で実行される) |
 
 ### Firestoreエミュレータ
 
-- アプリは開発モード(`import.meta.env.DEV`)のとき自動的にエミュレータへ接続する実装にする
-- CIのE2Eテストは `firebase emulators:exec` で実行する
+- アプリは開発モード(`import.meta.env.DEV`)のとき自動的にエミュレータへ接続する
+- `test:e2e` / `test:rules` は `firebase emulators:exec` でエミュレータを自動起動する
+- エミュレータには **Java 21以上** が必要。デフォルトのjavaが古い場合は `export JAVA_HOME=/opt/homebrew/opt/openjdk; export PATH="$JAVA_HOME/bin:$PATH"` を実行する
 
 ## CI/CD(GitHub Actions)
 
