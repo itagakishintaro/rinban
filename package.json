@@ -14,7 +14,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "bddgen && playwright test",
+    "test:e2e": "bddgen && firebase emulators:exec --only firestore --project demo-rinban 'playwright test'",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-rinban 'vitest run --config vitest.rules.config.ts'",
     "emulators": "firebase emulators:start"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^7.0.1",
