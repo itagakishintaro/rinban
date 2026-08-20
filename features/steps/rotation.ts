@@ -22,9 +22,9 @@ function todayWeekdayJa(): string {
 const scheduleItems = (page: Page) =>
   page.getByRole('list', { name: '予定一覧' }).getByRole('listitem')
 
+// 選択=即保存(保存ボタンはない)
 async function setRotation(page: Page, label: string) {
   await page.getByLabel('繰り返し').selectOption(TYPE_BY_LABEL[label])
-  await page.getByRole('button', { name: '設定を保存' }).click()
 }
 
 When('ローテーションを {string} に設定する', async ({ page }, label: string) => {
@@ -32,7 +32,6 @@ When('ローテーションを {string} に設定する', async ({ page }, label
 })
 
 When('ローテーションを {string} に変更する', async ({ page }, label: string) => {
-  await page.getByRole('button', { name: 'ローテーションを変更' }).click()
   await setRotation(page, label)
 })
 
