@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { createGroup } from '../lib/groups'
 import { validateName, NAME_MAX } from '../lib/validation'
+import { loadRecentGroups } from '../lib/recentGroups'
 
 export default function Home() {
   const [name, setName] = useState('')
   const [creating, setCreating] = useState(false)
+  const [recent] = useState(loadRecentGroups)
   const navigate = useNavigate()
 
   const valid = validateName(name) !== null
@@ -50,6 +52,24 @@ export default function Home() {
           作成
         </button>
       </form>
+
+      {recent.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-xl font-bold">最近見た輪番</h2>
+          <ul aria-label="最近見た輪番" className="mt-3 divide-y divide-gray-200">
+            {recent.map((g) => (
+              <li key={g.id}>
+                <Link
+                  to={`/g/${g.id}`}
+                  className="block py-2 text-blue-700 hover:underline"
+                >
+                  {g.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   )
 }

@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useGroup } from '../hooks/useGroup'
+import { recordVisit } from '../lib/recentGroups'
 import MemberSection from '../components/MemberSection'
 import ShareSection from '../components/ShareSection'
 import RotationSection from '../components/RotationSection'
@@ -8,6 +10,11 @@ import ScheduleSection from '../components/ScheduleSection'
 export default function Group() {
   const { groupId } = useParams()
   const state = useGroup(groupId!)
+  const groupName = state.status === 'ready' ? state.group.name : null
+
+  useEffect(() => {
+    if (groupName) recordVisit(groupId!, groupName)
+  }, [groupId, groupName])
 
   if (state.status === 'loading') {
     return <main className="mx-auto max-w-xl p-8 text-gray-500">読み込み中...</main>
