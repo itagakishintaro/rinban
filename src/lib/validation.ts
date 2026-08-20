@@ -1,8 +1,8 @@
-export const GROUP_NAME_MAX = 50
+export const NAME_MAX = 50
 
-// 有効ならtrim済みの名前を、無効ならnullを返す
-export function validateGroupName(raw: string): string | null {
+// グループ名・メンバー名の共通バリデーション。有効ならtrim済みの名前を、無効ならnullを返す
+export function validateName(raw: string): string | null {
   const name = raw.trim()
-  if (name.length === 0 || name.length > GROUP_NAME_MAX) return null
+  if (name.length === 0 || name.length > NAME_MAX) return null
   return name
 }
