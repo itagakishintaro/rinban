@@ -1,13 +1,6 @@
 import { test, expect } from 'vitest'
-import {
-  occurrences,
-  occurrenceIndex,
-  assigneeFor,
-  schedule,
-  rotationLabel,
-  isEnded,
-} from './rotation'
-import type { Group, Rotation } from '../types'
+import { occurrences, occurrenceIndex, assigneeFor, schedule, rotationLabel } from './rotation'
+import type { CustomRotation, Group, Rotation } from '../types'
 
 // 2026-08-22は土曜日(8月の土曜: 1, 8, 15, 22, 29 → 22日は第4)
 const daily: Rotation = { type: 'daily', anchorDate: '2026-08-22' }
@@ -98,12 +91,33 @@ test('occurrenceIndex: yearlyは年数', () => {
 })
 
 test('rotationLabel: 開始日からラベルを導出する', () => {
-  expect(rotationLabel('daily', '2026-08-22')).toBe('毎日')
-  expect(rotationLabel('weekly', '2026-08-22')).toBe('毎週 土曜日')
-  expect(rotationLabel('monthlyNthWeekday', '2026-08-22')).toBe('毎月 第4土曜日')
-  expect(rotationLabel('monthlyNthWeekday', '2026-08-29')).toBe('毎月 最終土曜日')
-  expect(rotationLabel('yearly', '2026-08-22')).toBe('毎年 8月22日')
-  expect(rotationLabel('weekdays', '2026-08-22')).toBe('毎週平日(月〜金)')
+  const at = (type: Rotation['type']) => rotationLabel({ type, anchorDate: '2026-08-22' } as Rotation)
+  expect(at('daily')).toBe('毎日')
+  expect(at('weekly')).toBe('毎週 土曜日')
+  expect(at('monthlyNthWeekday')).toBe('毎月 第4土曜日')
+  expect(rotationLabel({ type: 'monthlyNthWeekday', anchorDate: '2026-08-29' })).toBe('毎月 最終土曜日')
+  expect(at('yearly')).toBe('毎年 8月22日')
+  expect(at('weekdays')).toBe('毎週平日(月〜金)')
+})
+
+test('rotationLabel: カスタムは設定内容を要約する', () => {
+  expect(rotationLabel(custom({ interval: 3 }))).toBe('3日ごと')
+  expect(rotationLabel(custom({ interval: 2, unit: 'week', weekdays: [1, 5] }))).toBe(
+    '2週間ごと(月・金)',
+  )
+  expect(rotationLabel(custom({ interval: 1, unit: 'month', monthlyMode: 'day' }))).toBe(
+    '1か月ごと(22日)',
+  )
+  expect(rotationLabel(custom({ interval: 2, unit: 'month', monthlyMode: 'nthWeekday' }))).toBe(
+    '2か月ごと(第4土曜日)',
+  )
+  expect(rotationLabel(custom({ interval: 2, unit: 'year' }))).toBe('2年ごと(8月22日)')
+  expect(rotationLabel(custom({ interval: 1, ends: { type: 'count', count: 5 } }))).toBe(
+    '1日ごと、5回',
+  )
+  expect(rotationLabel(custom({ interval: 1, ends: { type: 'until', date: '2026-11-20' } }))).toBe(
+    '1日ごと、11月20日まで',
+  )
 })
 
 const alice = { id: 'a', name: 'アリス' }
@@ -153,8 +167,78 @@ test('schedule: 終了日より後の開催は含まれない', () => {
   ])
 })
 
-test('isEnded: 終了日を過ぎていればtrue', () => {
-  expect(isEnded({ ...group, endDate: '2026-08-21' }, '2026-08-22')).toBe(true)
-  expect(isEnded({ ...group, endDate: '2026-08-22' }, '2026-08-22')).toBe(false)
-  expect(isEnded(group, '2026-08-22')).toBe(false)
+// ---- カスタムの繰り返し ----
+
+function custom(over: Partial<CustomRotation>): CustomRotation {
+  return { type: 'custom', anchorDate: '2026-08-22', interval: 1, unit: 'day', ...over }
+}
+
+test('custom day: N日ごと', () => {
+  expect(occurrences(custom({ interval: 3 }), '2026-08-22', 3)).toEqual([
+    '2026-08-22',
+    '2026-08-25',
+    '2026-08-28',
+  ])
+  expect(occurrenceIndex(custom({ interval: 3 }), '2026-08-28')).toBe(2)
+})
+
+test('custom week: N週間ごとに複数曜日(週内は月→日の順)', () => {
+  // 2026-08-22(土)開始、2週間ごとの月・金。第0週の月(8/17)金(8/21)は開始日前でスキップ
+  const rot = custom({ interval: 2, unit: 'week', weekdays: [1, 5] })
+  expect(occurrences(rot, '2026-08-22', 4)).toEqual([
+    '2026-08-31', // 第2週の月
+    '2026-09-04', // 第2週の金
+    '2026-09-14',
+    '2026-09-18',
+  ])
+  expect(occurrenceIndex(rot, '2026-08-31')).toBe(0)
+  expect(occurrenceIndex(rot, '2026-09-18')).toBe(3)
+})
+
+test('custom week: 開始日当日を含む', () => {
+  const rot = custom({ interval: 1, unit: 'week', weekdays: [1, 6] }) // 月・土
+  expect(occurrences(rot, '2026-08-22', 3)).toEqual([
+    '2026-08-22', // 開始日(土)
+    '2026-08-24', // 翌週の月
+    '2026-08-29',
+  ])
+})
+
+test('custom month: Nか月ごとのN日(月末丸め)', () => {
+  const rot = custom({ anchorDate: '2026-08-31', interval: 2, unit: 'month', monthlyMode: 'day' })
+  expect(occurrences(rot, '2026-08-31', 3)).toEqual(['2026-08-31', '2026-10-31', '2026-12-31'])
+  const clamp = custom({ anchorDate: '2026-08-31', interval: 1, unit: 'month', monthlyMode: 'day' })
+  expect(occurrences(clamp, '2026-09-01', 1)).toEqual(['2026-09-30'])
+})
+
+test('custom month: Nか月ごとの第N曜日', () => {
+  // 2026-08-22は第4土曜
+  const rot = custom({ interval: 2, unit: 'month', monthlyMode: 'nthWeekday' })
+  expect(occurrences(rot, '2026-08-22', 3)).toEqual(['2026-08-22', '2026-10-24', '2026-12-26'])
+  expect(occurrenceIndex(rot, '2026-12-26')).toBe(2)
+})
+
+test('custom year: N年ごと', () => {
+  const rot = custom({ interval: 2, unit: 'year' })
+  expect(occurrences(rot, '2026-08-22', 3)).toEqual(['2026-08-22', '2028-08-22', '2030-08-22'])
+  expect(occurrenceIndex(rot, '2030-08-22')).toBe(2)
+})
+
+test('custom ends until: 終了日より後は開催しない', () => {
+  const rot = custom({ interval: 1, ends: { type: 'until', date: '2026-08-24' } })
+  expect(occurrences(rot, '2026-08-22', 10)).toEqual(['2026-08-22', '2026-08-23', '2026-08-24'])
+})
+
+test('custom ends count: 通算N回で終了(fromが途中でも通算で数える)', () => {
+  const rot = custom({ interval: 1, ends: { type: 'count', count: 5 } })
+  expect(occurrences(rot, '2026-08-22', 10)).toHaveLength(5)
+  expect(occurrences(rot, '2026-08-25', 10)).toEqual(['2026-08-25', '2026-08-26']) // 4回目と5回目
+})
+
+test('custom: 担当は通算回数で循環する', () => {
+  const g: Group = { ...group, rotation: custom({ interval: 1, unit: 'week', weekdays: [1, 5] }) }
+  // 開催: 8/24(月)k=0, 8/28(金)k=1, 8/31(月)k=2...
+  expect(assigneeFor(g, '2026-08-24')).toEqual(alice)
+  expect(assigneeFor(g, '2026-08-28')).toEqual(bob)
+  expect(assigneeFor(g, '2026-08-31')).toEqual(alice)
 })
