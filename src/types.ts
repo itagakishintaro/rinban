@@ -3,11 +3,11 @@ export type Member = {
   name: string
 }
 
+export type RotationType = 'daily' | 'weekly' | 'weekdays' | 'monthlyNthWeekday' | 'yearly'
+
 export type Rotation = {
-  type: 'weekly' | 'biweekly' | 'monthly'
-  weekday?: number
-  dayOfMonth?: number
-  anchorDate: string
+  type: RotationType
+  anchorDate: string // 'YYYY-MM-DD'。開始日。曜日・第N・月日はすべてここから導出
 }
 
 export type Group = {

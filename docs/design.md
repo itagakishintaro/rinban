@@ -36,10 +36,8 @@ groups/{groupId}
   ],
   order: string[],              // member.id の並び。輪番はこの順で回る
   rotation: {
-    type: 'weekly' | 'biweekly' | 'monthly',
-    weekday?: number,           // 0(日)〜6(土)。weekly / biweekly で必須
-    dayOfMonth?: number,        // 1〜31。monthly で必須。月にその日がなければ月末に丸める
-    anchorDate: string          // 'YYYY-MM-DD'。開始日かつ隔週の基準日
+    type: 'daily' | 'weekly' | 'weekdays' | 'monthlyNthWeekday' | 'yearly',
+    anchorDate: string          // 'YYYY-MM-DD'。開始日。曜日・第N・月日はすべてここから導出
   },
   overrides: {                  // 例外。表示時に通常計算より優先
     [date: string]: string      // 'YYYY-MM-DD' → member.id
@@ -54,13 +52,23 @@ groups/{groupId}
 
 ## ドメインロジック
 
+### ローテーションの種別(Google Calendar方式)
+
+設定UIは「開始日を選ぶと、その日付から導出したラベルの選択肢が並ぶ」方式。
+例: 開始日が2026-08-22(土)なら「毎週 土曜日」「毎月 第4土曜日」「毎年 8月22日」。
+カスタム(任意間隔など)はMVP対象外。
+
+| type | 開催日の規則 |
+| --- | --- |
+| daily | 毎日 |
+| weekly | 毎週、anchorDateと同じ曜日 |
+| weekdays | 毎週平日(月〜金)。anchorDateが土日なら翌月曜から |
+| monthlyNthWeekday | 毎月、anchorDateの「第N X曜日」。anchorDateが第5週なら「最終X曜日」として扱う |
+| yearly | 毎年、anchorDateと同じ月日。2/29は平年は2/28 |
+
 ### 開催日の計算
 
 `occurrences(rotation, from, n)` — from以降の開催日をn件返す純粋関数。
-
-- weekly: anchorDate以降の毎週weekday
-- biweekly: anchorDateを含む週を第0週として、偶数週のweekday
-- monthly: 毎月dayOfMonth。存在しない月(例: 2/31)はその月の末日
 
 ### 担当者の計算
 

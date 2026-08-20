@@ -1,64 +1,102 @@
 import { test, expect } from 'vitest'
-import { occurrences, occurrenceIndex, assigneeFor, schedule } from './rotation'
+import { occurrences, occurrenceIndex, assigneeFor, schedule, rotationLabel } from './rotation'
 import type { Group, Rotation } from '../types'
 
-// 2026-08-20は木曜日
-const weekly: Rotation = { type: 'weekly', weekday: 1, anchorDate: '2026-08-20' } // 毎週月曜
-const biweekly: Rotation = { type: 'biweekly', weekday: 1, anchorDate: '2026-08-20' }
-const monthly31: Rotation = { type: 'monthly', dayOfMonth: 31, anchorDate: '2026-08-20' }
+// 2026-08-22は土曜日(8月の土曜: 1, 8, 15, 22, 29 → 22日は第4)
+const daily: Rotation = { type: 'daily', anchorDate: '2026-08-22' }
+const weekly: Rotation = { type: 'weekly', anchorDate: '2026-08-22' }
+const weekdays: Rotation = { type: 'weekdays', anchorDate: '2026-08-22' }
+const nth4: Rotation = { type: 'monthlyNthWeekday', anchorDate: '2026-08-22' }
+const nth5: Rotation = { type: 'monthlyNthWeekday', anchorDate: '2026-08-29' } // 第5土曜=最終扱い
+const yearly: Rotation = { type: 'yearly', anchorDate: '2026-08-22' }
 
-test('weekly: anchorDate以降の最初の該当曜日から7日ごと', () => {
-  expect(occurrences(weekly, '2026-08-20', 3)).toEqual(['2026-08-24', '2026-08-31', '2026-09-07'])
+test('daily: anchorDateから毎日', () => {
+  expect(occurrences(daily, '2026-08-22', 3)).toEqual(['2026-08-22', '2026-08-23', '2026-08-24'])
 })
 
-test('weekly: anchorDate当日が該当曜日なら当日から', () => {
-  const rot: Rotation = { type: 'weekly', weekday: 4, anchorDate: '2026-08-20' } // 木曜開始
-  expect(occurrences(rot, '2026-08-20', 2)).toEqual(['2026-08-20', '2026-08-27'])
+test('daily: fromがanchorより未来ならfromから', () => {
+  expect(occurrences(daily, '2026-09-01', 2)).toEqual(['2026-09-01', '2026-09-02'])
 })
 
-test('weekly: fromが未来なら途中の回から返す', () => {
-  expect(occurrences(weekly, '2026-09-01', 2)).toEqual(['2026-09-07', '2026-09-14'])
+test('daily: fromがanchorより過去ならanchorから', () => {
+  expect(occurrences(daily, '2026-08-01', 2)).toEqual(['2026-08-22', '2026-08-23'])
 })
 
-test('weekly: fromが開催日当日ならその日を含む', () => {
-  expect(occurrences(weekly, '2026-08-31', 2)).toEqual(['2026-08-31', '2026-09-07'])
+test('weekly: anchorDateと同じ曜日に7日ごと', () => {
+  expect(occurrences(weekly, '2026-08-22', 3)).toEqual(['2026-08-22', '2026-08-29', '2026-09-05'])
 })
 
-test('biweekly: 14日ごと', () => {
-  expect(occurrences(biweekly, '2026-08-20', 3)).toEqual(['2026-08-24', '2026-09-07', '2026-09-21'])
+test('weekly: fromが途中なら次の回から', () => {
+  expect(occurrences(weekly, '2026-08-23', 2)).toEqual(['2026-08-29', '2026-09-05'])
 })
 
-test('monthly: 毎月の該当日。存在しない月は月末に丸める', () => {
-  expect(occurrences(monthly31, '2026-08-20', 4)).toEqual([
-    '2026-08-31',
-    '2026-09-30', // 9月は30日まで
-    '2026-10-31',
-    '2026-11-30',
+test('weekdays: 平日のみ。anchorが土曜なら翌月曜から', () => {
+  expect(occurrences(weekdays, '2026-08-22', 6)).toEqual([
+    '2026-08-24', // 月
+    '2026-08-25',
+    '2026-08-26',
+    '2026-08-27',
+    '2026-08-28', // 金
+    '2026-08-31', // 翌月曜(土日スキップ)
   ])
 })
 
-test('monthly: 2月は28日(平年)に丸める', () => {
-  expect(occurrences(monthly31, '2027-02-01', 1)).toEqual(['2027-02-28'])
+test('monthlyNthWeekday: 毎月第4土曜日', () => {
+  expect(occurrences(nth4, '2026-08-22', 3)).toEqual([
+    '2026-08-22', // 8月第4土曜
+    '2026-09-26', // 9月第4土曜
+    '2026-10-24', // 10月第4土曜(10月は31日が第5土曜)
+  ])
 })
 
-test('monthly: anchorより前の該当日はその月をスキップ', () => {
-  const rot: Rotation = { type: 'monthly', dayOfMonth: 1, anchorDate: '2026-08-20' }
-  expect(occurrences(rot, '2026-08-20', 2)).toEqual(['2026-09-01', '2026-10-01'])
+test('monthlyNthWeekday: 第5週開始は最終X曜日として扱う', () => {
+  expect(occurrences(nth5, '2026-08-29', 3)).toEqual([
+    '2026-08-29', // 8月最終土曜
+    '2026-09-26', // 9月最終土曜(第4)
+    '2026-10-31', // 10月最終土曜(第5)
+  ])
 })
 
-test('occurrenceIndex: weeklyは基準回からの週数', () => {
-  expect(occurrenceIndex(weekly, '2026-08-24')).toBe(0)
-  expect(occurrenceIndex(weekly, '2026-09-07')).toBe(2)
+test('yearly: 毎年同じ月日', () => {
+  expect(occurrences(yearly, '2026-08-22', 2)).toEqual(['2026-08-22', '2027-08-22'])
 })
 
-test('occurrenceIndex: biweeklyは14日単位', () => {
-  expect(occurrenceIndex(biweekly, '2026-09-21')).toBe(2)
+test('yearly: 2/29開始は平年2/28に丸める', () => {
+  const rot: Rotation = { type: 'yearly', anchorDate: '2028-02-29' }
+  expect(occurrences(rot, '2028-02-29', 2)).toEqual(['2028-02-29', '2029-02-28'])
 })
 
-test('occurrenceIndex: monthlyは月数(丸めがあっても正しい)', () => {
-  expect(occurrenceIndex(monthly31, '2026-08-31')).toBe(0)
-  expect(occurrenceIndex(monthly31, '2026-09-30')).toBe(1)
-  expect(occurrenceIndex(monthly31, '2027-01-31')).toBe(5)
+test('occurrenceIndex: dailyは日数', () => {
+  expect(occurrenceIndex(daily, '2026-08-22')).toBe(0)
+  expect(occurrenceIndex(daily, '2026-08-25')).toBe(3)
+})
+
+test('occurrenceIndex: weeklyは週数', () => {
+  expect(occurrenceIndex(weekly, '2026-09-05')).toBe(2)
+})
+
+test('occurrenceIndex: weekdaysは営業日数(週をまたいでも連続)', () => {
+  expect(occurrenceIndex(weekdays, '2026-08-24')).toBe(0)
+  expect(occurrenceIndex(weekdays, '2026-08-28')).toBe(4) // 同じ週の金曜
+  expect(occurrenceIndex(weekdays, '2026-08-31')).toBe(5) // 翌月曜
+})
+
+test('occurrenceIndex: monthlyNthWeekdayは月数', () => {
+  expect(occurrenceIndex(nth4, '2026-10-24')).toBe(2)
+  expect(occurrenceIndex(nth5, '2026-10-31')).toBe(2)
+})
+
+test('occurrenceIndex: yearlyは年数', () => {
+  expect(occurrenceIndex(yearly, '2027-08-22')).toBe(1)
+})
+
+test('rotationLabel: 開始日からラベルを導出する', () => {
+  expect(rotationLabel('daily', '2026-08-22')).toBe('毎日')
+  expect(rotationLabel('weekly', '2026-08-22')).toBe('毎週 土曜日')
+  expect(rotationLabel('monthlyNthWeekday', '2026-08-22')).toBe('毎月 第4土曜日')
+  expect(rotationLabel('monthlyNthWeekday', '2026-08-29')).toBe('毎月 最終土曜日')
+  expect(rotationLabel('yearly', '2026-08-22')).toBe('毎年 8月22日')
+  expect(rotationLabel('weekdays', '2026-08-22')).toBe('毎週平日(月〜金)')
 })
 
 const alice = { id: 'a', name: 'アリス' }
@@ -72,30 +110,30 @@ const group: Group = {
 }
 
 test('assigneeFor: order順に循環する', () => {
-  expect(assigneeFor(group, '2026-08-24')).toEqual(alice) // k=0
-  expect(assigneeFor(group, '2026-08-31')).toEqual(bob) // k=1
-  expect(assigneeFor(group, '2026-09-07')).toEqual(alice) // k=2
+  expect(assigneeFor(group, '2026-08-22')).toEqual(alice) // k=0
+  expect(assigneeFor(group, '2026-08-29')).toEqual(bob) // k=1
+  expect(assigneeFor(group, '2026-09-05')).toEqual(alice) // k=2
 })
 
 test('assigneeFor: overrideが優先される', () => {
-  const g = { ...group, overrides: { '2026-08-24': 'b' } }
-  expect(assigneeFor(g, '2026-08-24')).toEqual(bob)
+  const g = { ...group, overrides: { '2026-08-22': 'b' } }
+  expect(assigneeFor(g, '2026-08-22')).toEqual(bob)
 })
 
 test('assigneeFor: 無効なIDのoverrideは無視して通常計算', () => {
-  const g = { ...group, overrides: { '2026-08-24': 'deleted-id' } }
-  expect(assigneeFor(g, '2026-08-24')).toEqual(alice)
+  const g = { ...group, overrides: { '2026-08-22': 'deleted-id' } }
+  expect(assigneeFor(g, '2026-08-22')).toEqual(alice)
 })
 
 test('assigneeFor: rotation未設定やorder空ならnull', () => {
-  expect(assigneeFor({ ...group, rotation: undefined }, '2026-08-24')).toBeNull()
-  expect(assigneeFor({ ...group, order: [] }, '2026-08-24')).toBeNull()
+  expect(assigneeFor({ ...group, rotation: undefined }, '2026-08-22')).toBeNull()
+  expect(assigneeFor({ ...group, order: [] }, '2026-08-22')).toBeNull()
 })
 
 test('schedule: 開催日と担当者の一覧を返す', () => {
-  expect(schedule(group, '2026-08-20', 3)).toEqual([
-    { date: '2026-08-24', member: alice },
-    { date: '2026-08-31', member: bob },
-    { date: '2026-09-07', member: alice },
+  expect(schedule(group, '2026-08-22', 3)).toEqual([
+    { date: '2026-08-22', member: alice },
+    { date: '2026-08-29', member: bob },
+    { date: '2026-09-05', member: alice },
   ])
 })
